@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Collapse Watch</title>
   <style>
     body {
-      background: #000; color: #fff; font-family: monospace; padding: 2rem;
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+      padding: 2rem;
       margin: 0;
     }
     h1 {
@@ -45,13 +48,19 @@
     const indicators = [
       {
         name: "Gold Price (USD)",
-        url: "https://api.metals.live/v1/spot/gold",
-        parse: (data) => "$" + data[0].gold,
+        url: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://api.metals.live/v1/spot/gold"),
+        parse: (data) => {
+          const json = JSON.parse(data.contents);
+          return "$" + json[0].gold;
+        }
       },
       {
         name: "Bitcoin Price (USD)",
-        url: "https://api.coindesk.com/v1/bpi/currentprice/BTC.json",
-        parse: (data) => "$" + parseFloat(data.bpi.USD.rate_float).toFixed(2),
+        url: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://api.coindesk.com/v1/bpi/currentprice/BTC.json"),
+        parse: (data) => {
+          const json = JSON.parse(data.contents);
+          return "$" + parseFloat(json.bpi.USD.rate_float).toFixed(2);
+        }
       }
     ];
 

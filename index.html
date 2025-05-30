@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collapse Watch</title>
+  <style>
+    body {
+      background: #000; color: #fff; font-family: monospace; padding: 2rem;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2rem;
+      border-bottom: 1px solid white;
+      padding-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .card {
+      border: 2px solid white;
+      background: #111;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+      max-width: 400px;
+    }
+    h2 {
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    p {
+      font-size: 2rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Collapse Watch</h1>
+  <div id="dashboard"></div>
+
+  <script>
+    const indicators = [
+      {
+        name: "Gold Price (USD)",
+        url: "https://api.metals.live/v1/spot/gold",
+        parse: (data) => "$" + data[0].gold,
+      },
+      {
+        name: "Bitcoin Price (USD)",
+        url: "https://api.coindesk.com/v1/bpi/currentprice/BTC.json",
+        parse: (data) => "$" + parseFloat(data.bpi.USD.rate_float).toFixed(2),
+      }
+    ];
+
+    const dashboard = document.getElementById('dashboard');
+
+    async function fetchIndicators() {
+      dashboard.innerHTML = '';
+      for (let ind of indicators) {
+        let value = 'Error';
+        try {
+          const res = await fetch(ind.url);
+          const json = await res.json();
+          value = ind.parse(json);
+        } catch (e) {
+          console.log('Error fetching', ind.name, e);
+        }
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<h2>${ind.name}</h2><p>${value}</p>`;
+        dashboard.appendChild(card);
+      }
+    }
+
+    fetchIndicators();
+    setInterval(fetchIndicators, 60000);
+  </script>
+</body>
+</html>

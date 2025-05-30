@@ -48,18 +48,16 @@
     const indicators = [
       {
         name: "Gold Price (USD)",
-        url: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://api.metals.live/v1/spot/gold"),
+        url: "https://corsproxy.io/https://api.metals.live/v1/spot/gold",
         parse: (data) => {
-          const json = JSON.parse(data.contents);
-          return "$" + json[0].gold;
+          return data[0]?.gold ? "$" + data[0].gold : "N/A";
         }
       },
       {
         name: "Bitcoin Price (USD)",
-        url: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://api.coindesk.com/v1/bpi/currentprice/BTC.json"),
+        url: "https://corsproxy.io/https://api.coindesk.com/v1/bpi/currentprice/BTC.json",
         parse: (data) => {
-          const json = JSON.parse(data.contents);
-          return "$" + parseFloat(json.bpi.USD.rate_float).toFixed(2);
+          return data.bpi?.USD?.rate_float ? "$" + data.bpi.USD.rate_float.toFixed(2) : "N/A";
         }
       }
     ];
